@@ -1,0 +1,49 @@
+{% extends 'parking_app/base.html' %}
+
+{% block content %}
+<h1>Личный кабинет</h1>
+<div class="card">
+    <p>Имя: {{ user.username }}</p>
+    <p>Email: {{ user.email }}</p>
+    {% if client %}
+        <p>ФИО: {{ client.full_name }}</p>
+        <p>Телефон: {{ client.phone }}</p>
+        <p>Дата рождения: {{ client.birth_date|date:"d/m/Y" }}</p>
+    {% endif %}
+    {% if user.is_superuser %}
+        <p><a href="/admin/" class="btn">Админ-панель</a></p>
+    {% endif %}
+</div>
+
+{% if cars %}
+    <h2>Мои автомобили</h2>
+    {% for car in cars %}
+        <div class="card">
+            <p>{{ car.brand }} {{ car.model }} | Госномер: {{ car.license_plate }}</p>
+        </div>
+    {% endfor %}
+{% else %}
+    <p>У вас пока нет автомобилей. Добавьте через админку.</p>
+{% endif %}
+
+{% if invoices %}
+    <h2>Мои счета (долги)</h2>
+    {% for inv in invoices %}
+        <div class="card">
+            <p>Месяц: {{ inv.date_incurred|date:"m/Y" }} | Сумма: {{ inv.amount }} руб. | Статус: {% if inv.is_paid %}Оплачено{% else %}Не оплачено{% endif %}</p>
+        </div>
+    {% endfor %}
+{% else %}
+    <p>Нет счетов.</p>
+{% endif %}
+{% if payments %}
+    <h2>История платежей</h2>
+    {% for p in payments %}
+        <div class="card">
+            <p>{{ p.payment_date|date:"d/m/Y" }} — {{ p.amount }} руб.</p>
+        </div>
+    {% endfor %}
+{% else %}
+    <p>Нет платежей.</p>
+{% endif %}
+{% endblock %}

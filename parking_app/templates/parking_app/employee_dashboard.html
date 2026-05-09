@@ -1,0 +1,41 @@
+{% extends 'parking_app/base.html' %}
+
+{% block content %}
+<h1>Панель сотрудника</h1>
+
+<div class="card">
+    <h2>Клиенты</h2>
+    <ul>
+        {% for c in clients %}
+            <li>{{ c.full_name }} ({{ c.phone }})</li>
+        {% endfor %}
+    </ul>
+</div>
+
+<div class="card">
+    <h2>Автомобили</h2>
+    <ul>
+        {% for car in cars %}
+            <li>{{ car.brand }} {{ car.model }} ({{ car.license_plate }})</li>
+        {% endfor %}
+    </ul>
+</div>
+
+<div class="card">
+    <h2>Счета (продажи)</h2>
+    <ul>
+        {% for inv in invoices %}
+            <li>{{ inv.client.full_name }} — {{ inv.amount }} руб. ({{ inv.date_incurred|date:"m/Y" }})</li>
+        {% endfor %}
+    </ul>
+</div>
+
+<div class="card">
+    <h2>Доходы</h2>
+    <ul>
+        {% for inc in incomes %}
+            <li>{{ inc.date|date:"d/m/Y" }} — {{ inc.amount }} руб. ({{ inc.source }})</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

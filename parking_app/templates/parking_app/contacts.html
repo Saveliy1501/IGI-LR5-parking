@@ -1,0 +1,16 @@
+{% extends 'parking_app/base.html' %}
+
+{% block content %}
+<h1>Контакты</h1>
+{% for contact in contacts %}
+    <div class="card">
+        <h3>{{ contact.full_name }}</h3>
+        <p>Должность: {{ contact.position }}</p>
+        <p>Телефон: {{ contact.phone }}</p>
+        <p>Email: {{ contact.email }}</p>
+        <p>{{ contact.description }}</p>
+    </div>
+{% empty %}
+    <p>Сотрудников пока нет.</p>
+{% endfor %}
+{% endblock %}

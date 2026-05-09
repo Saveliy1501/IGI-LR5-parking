@@ -1,0 +1,24 @@
+{% extends 'parking_app/base.html' %}
+
+{% block content %}
+<h1>Промокоды и купоны</h1>
+
+<h2>Действующие</h2>
+{% for promo in active %}
+    <div class="card">
+        <p><strong>{{ promo.code }}</strong> - Скидка {{ promo.discount_percent }}%</p>
+        <p>Действует до: {{ promo.valid_to|date:"d/m/Y" }}</p>
+    </div>
+{% empty %}
+    <p>Нет действующих промокодов.</p>
+{% endfor %}
+
+<h2>Архивные</h2>
+{% for promo in archived %}
+    <div class="card">
+        <p><strong>{{ promo.code }}</strong> - Скидка {{ promo.discount_percent }}%</p>
+    </div>
+{% empty %}
+    <p>Нет архивных промокодов.</p>
+{% endfor %}
+{% endblock %}

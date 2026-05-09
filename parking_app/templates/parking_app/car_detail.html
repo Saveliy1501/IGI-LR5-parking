@@ -1,0 +1,17 @@
+{% extends 'parking_app/base.html' %}
+
+{% block content %}
+<h1>{{ car.brand }} {{ car.model }}</h1>
+<div class="card">
+    <p>Госномер: {{ car.license_plate }}</p>
+    <p>Владельцы:</p>
+    <ul>
+        {% for owner in car.owners.all %}
+            <li>{{ owner.full_name }}</li>
+        {% empty %}
+            <li>Нет владельцев</li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'cars' %}" class="btn">Назад</a>
+</div>
+{% endblock %}

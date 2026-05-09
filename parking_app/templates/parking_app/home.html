@@ -1,0 +1,15 @@
+{% extends 'parking_app/base.html' %}
+
+{% block content %}
+<h1>Автостоянка AutoCar</h1>
+<div class="card">
+    <h2>Последняя новость</h2>
+    {% if latest_news %}
+        <h3>{{ latest_news.title }}</h3>
+        <p>{{ latest_news.short_content }}</p>
+        <a href="{% url 'news_list'%}" class="btn">Читать далее</a>
+    {% else %}
+        <p>Нет новостей.</p>
+    {% endif %}
+</div>
+{% endblock %}

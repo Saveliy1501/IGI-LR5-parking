@@ -1,0 +1,114 @@
+{% extends 'parking_app/base.html' %}
+
+{% block content %}
+<h1>Статистика автостоянки</h1>
+
+<!-- Общая статистика -->
+<div class="card">
+    <h2>Общие показатели</h2>
+    <ul>
+        <li>Всего клиентов: {{ total_clients }}</li>
+        <li>Всего автомобилей: {{ total_cars }}</li>
+        <li>Всего парковочных мест: {{ total_spots }}</li>
+        <li>Занято мест: {{ occupied_spots }}</li>
+        <li>Общая сумма долгов: {{ total_debt_all }} руб.</li>
+    </ul>
+</div>
+
+<!-- 1. Клиент с самым большим долгом -->
+<div class="card">
+    <h2>Клиент с самым большим долгом</h2>
+    {% if top_debtor %}
+        <p><strong>{{ top_debtor.full_name }}</strong> должен <strong>{{ top_debtor.debt }} руб.</strong></p>
+        <p>Последний платёж: {{ top_debtor.last_payment_date|date:"d/m/Y" }}</p>
+    {% else %}
+        <p>Нет должников.</p>
+    {% endif %}
+</div>
+
+<!-- 2. Автомобили с несколькими владельцами -->
+<div class="card">
+    <h2>Автомобили с несколькими владельцами ({{ multi_owner_count }})</h2>
+    {% if multi_owner_list %}
+        <ul>
+            {% for car in multi_owner_list %}
+                <li>{{ car.brand }} {{ car.model }} ({{ car.plate }}) — {{ car.owners_count }} владельца</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Нет таких авто.</p>
+    {% endif %}
+</div>
+
+<!-- 3. Анализ за период -->
+<div class="card">
+    <h2>Анализ за период</h2>
+    <form method="get" style="margin-bottom: 15px;">
+        <label>Период (дней): 
+            <input type="number" name="period_days" value="{{ period_days }}" min="1" max="365" style="width:80px">
+        </label>
+        <button type="submit" class="btn">Обновить</button>
+    </form>
+    
+    <p><strong>Автомобиль с наименьшим долгом:</strong> 
+    {% if min_debt_info %}
+        {{ min_debt_info.brand }} {{ min_debt_info.model }} ({{ min_debt_info.plate }}) — {{ min_debt_info.debt }} руб.
+    {% else %}
+        нет данных
+    {% endif %}
+    </p>
+    
+    <p><strong>Сумма долга за период:</strong> 
+        начисления: {{ total_invoiced }} руб. | оплаты: {{ total_paid }} руб. | 
+        <strong>итог: {{ net_debt }} руб.</strong>
+    </p>
+</div>
+
+<!-- 4. Поиск по марке с сортировкой -->
+<div class="card">
+    <h2>Поиск автомобилей</h2>
+    <form method="get" style="margin-bottom: 10px;">
+        <input type="text" name="brand" value="{{ brand_query }}" placeholder="Марка (например, Toyota)" style="width:200px">
+        <select name="sort_by" style="margin:0 5px">
+            <option value="brand" {% if sort_by == 'brand' %}selected{% endif %}>По марке</option>
+            <option value="model" {% if sort_by == 'model' %}selected{% endif %}>По модели</option>
+            <option value="plate" {% if sort_by == 'plate' %}selected{% endif %}>По номеру</option>
+        </select>
+        <button type="submit" class="btn">Найти</button>
+    </form>
+    
+    {% if cars_by_brand_list %}
+        <ul>
+            {% for car in cars_by_brand_list %}
+                <li>
+                    <strong>{{ car.brand }} {{ car.model }}</strong> ({{ car.plate }}) — 
+                    владельцы: 
+                    {% for owner in car.owners %}
+                        {{ owner.full_name }}{% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% elif brand_query %}
+        <p>Автомобили марки "{{ brand_query }}" не найдены.</p>
+    {% endif %}
+</div>
+
+<!-- 5. Диаграмма распределения мест -->
+<div class="card">
+    <h2>Распределение парковочных мест</h2>
+    {% with free=chart_data.data.0 occupied=chart_data.data.1 total=total_spots %}
+        <p>🟢 Свободно: {{ free }} мест</p>
+        <p>🔴 Занято: {{ occupied }} мест</p>
+        {% if total > 0 %}
+            <div style="background-color: #dc3545; border-radius: 5px; height: 25px; width: 100%; overflow: hidden;">
+                <div style="background-color: #28a745; width: {% widthratio free total 100 %}%; height: 25px; display: inline-block;"></div>
+                <div style="background-color: #dc3545; width: {% widthratio occupied total 100 %}%; height: 25px; display: inline-block;"></div>
+            </div>
+            <p>Свободно: {% widthratio free total 100 %}% | Занято: {% widthratio occupied total 100 %}%</p>
+        {% else %}
+            <p>Нет парковочных мест</p>
+        {% endif %}
+    {% endwith %}
+</div>
+{% endblock %}

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Автостоянка AutoCar{% endblock %}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background: #333;
+            color: white;
+            padding: 10px;
+        }
+
+        nav a {
+            color: white;
+            margin-right: 15px;
+            text-decoration: none;
+        }
+
+        .container {
+            padding: 20px;
+        }
+
+        .card {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+        }
+
+        .btn {
+            background: #007bff;
+            color: white;
+            padding: 5px 10px;
+            text-decoration: none;
+            border-radius: 3px;
+        }
+
+        .footer {
+            background: #333;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            margin-top: 20px;
+        }
+
+        .nav-user {
+            float: right;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <nav>
+            <a href="{% url 'home' %}">Главная</a>
+            <a href="{% url 'about' %}">О компании</a>
+            <a href="{% url 'news_list' %}">Новости</a>
+            <a href="{% url 'terms' %}">Словарь</a>
+            <a href="{% url 'calendar' %}">Календарь</a>
+            <a href="{% url 'contacts' %}">Контакты</a>
+            <a href="{% url 'vacancies' %}">Вакансии</a>
+            <a href="{% url 'reviews' %}">Отзывы</a>
+            {% if user.is_authenticated %}
+                <a href="{% url 'api_page' %}">API</a>
+            {% endif %} 
+            <a href="{% url 'promocodes' %}">Промокоды</a>
+            
+            {% if user.is_authenticated %}
+                <a href="{% url 'cars' %}">Автомобили</a>
+            {% endif %}           
+            <a href="{% url 'spots' %}">Места</a>
+            {% if user.is_authenticated %}
+                <a href="{% url 'statistics' %}">Статистика</a>
+            {% endif %}  
+            <span class="nav-user">
+                {% if user.is_authenticated %}
+                {{ user.username }}
+                <a href="{% url 'profile' %}">Профиль</a>
+                {% if user.client.is_employee %}
+                <a href="{% url 'employee_dashboard' %}">Панель сотрудника</a>
+                {% endif %}
+                {% if user.is_superuser %}
+                <a href="/admin/">Админка</a>
+                {% endif %}
+                <a href="{% url 'logout' %}">Выйти</a>
+                {% else %}
+                <a href="{% url 'login' %}">Вход</a>
+                <a href="{% url 'register' %}">Регистрация</a>
+                {% endif %}
+            </span>
+        </nav>
+    </header>
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+    <div class="footer">
+        <p>Дата: {% now "d/m/Y H:i:s" %} | Таймзона: Europe/Minsk</p>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,48 @@
+{% extends 'parking_app/base.html' %}
+
+{% block content %}
+<h1>Календарь</h1>
+
+<div class="card">
+    <div style="text-align: center; margin-bottom: 20px;">
+        <a href="?year={{ prev_year }}&month={{ prev_month }}" class="btn">← {{ prev_month }}/{{ prev_year }}</a>
+        <strong style="font-size: 20px; margin: 0 20px;">{{ month_title }} {{ year }}</strong>
+        <a href="?year={{ next_year }}&month={{ next_month }}" class="btn">{{ next_month }}/{{ next_year }} →</a>
+    </div>
+    
+    <table style="width: 100%; border-collapse: collapse; text-align: center;">
+        <thead>
+            <tr>
+                <th style="border: 1px solid #ddd; padding: 10px;">Пн</th>
+                <th style="border: 1px solid #ddd; padding: 10px;">Вт</th>
+                <th style="border: 1px solid #ddd; padding: 10px;">Ср</th>
+                <th style="border: 1px solid #ddd; padding: 10px;">Чт</th>
+                <th style="border: 1px solid #ddd; padding: 10px;">Пт</th>
+                <th style="border: 1px solid #ddd; padding: 10px;">Сб</th>
+                <th style="border: 1px solid #ddd; padding: 10px;">Вс</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for week in calendar %}
+            <tr>
+                {% for day in week %}
+                    {% if day == 0 %}
+                        <td style="border: 1px solid #ddd; padding: 10px; color: #ccc;"> </td>
+                    {% else %}
+                        <td style="border: 1px solid #ddd; padding: 10px;">
+                            {{ day }}
+                        </td>
+                    {% endif %}
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <p style="margin-top: 20px; text-align: center;">
+        Сегодня: {% now "d/m/Y" %}
+    </p>
+</div>
+
+<p><a href="{% url 'home' %}" class="btn">На главную</a></p>
+{% endblock %}

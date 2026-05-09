@@ -1,0 +1,14 @@
+{% extends 'parking_app/base.html' %}
+
+{% block content %}
+<h1>Новости компании</h1>
+{% for new in news %}
+    <div class="card">
+        <h3>{{ new.title }}</h3>
+        <p>{{ new.content }}</p>
+        <p><small>Добавлено: {{ new.created_at|date:"d/m/Y" }}</small></p>
+    </div>
+{% empty %}
+    <p>Терминов пока нет.</p>
+{% endfor %}
+{% endblock %}

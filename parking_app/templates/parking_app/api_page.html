@@ -1,0 +1,23 @@
+{% extends 'parking_app/base.html' %}
+
+{% block content %}
+<h1>Внешние сервисы (API)</h1>
+
+<div class="card">
+    <h2>🌤 Погода в Минске</h2>
+    <p style="font-size: 18px;">{{ weather }}</p>
+    <small>Источник: wttr.in </small>
+</div>
+
+<div class="card">
+    <h2>💰 Курсы валют</h2>
+    <ul>
+        <li>🇺🇸 USD → BYN: <strong>{{ rates.usd }}</strong> руб.</li>
+        <li>🇪🇺 EUR → BYN: <strong>{{ rates.eur }}</strong> руб.</li>
+        <li>🇷🇺 RUB → BYN: <strong>{{ rates.rub }}</strong> руб.</li>
+    </ul>
+    <small>Обновлено: {{ rates.updated }} (источник: floatrates.com)</small>
+</div>
+
+<p><a href="{% url 'home' %}" class="btn">На главную</a></p>
+{% endblock %}

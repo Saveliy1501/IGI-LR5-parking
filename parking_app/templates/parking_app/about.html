@@ -1,0 +1,16 @@
+{% extends 'parking_app/base.html' %}
+
+{% block content %}
+<h1>О компании</h1>
+<div class="card">
+    {% if info %}
+        <p>{{ info.text }}</p>
+        {% if info.video_url %}
+            <p><a href="{{ info.video_url }}">Видео</a></p>
+        {% endif %}
+        <p>Реквизиты: {{ info.requisites }}</p>
+    {% else %}
+        <p>Информация о компании временно отсутствует.</p>
+    {% endif %}
+</div>
+{% endblock %}

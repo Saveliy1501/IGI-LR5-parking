@@ -1,0 +1,15 @@
+{% extends 'parking_app/base.html' %}
+
+{% block content %}
+<h1>Отзывы</h1>
+<a href="{% url 'add_review' %}" class="btn">Добавить отзыв</a>
+{% for review in reviews %}
+    <div class="card">
+        <p><strong>{{ review.author_name }}</strong> (Оценка: {{ review.rating }})</p>
+        <p>{{ review.text }}</p>
+        <p><small>{{ review.created_at|date:"d/m/Y" }}</small></p>
+    </div>
+{% empty %}
+    <p>Отзывов пока нет.</p>
+{% endfor %}
+{% endblock %}

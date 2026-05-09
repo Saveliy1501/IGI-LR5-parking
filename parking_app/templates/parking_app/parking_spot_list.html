@@ -1,0 +1,50 @@
+{% extends 'parking_app/base.html' %}
+
+{% block content %}
+<h1>Парковочные места</h1>
+
+<!-- Форма фильтрации -->
+<div class="card">
+    <form method="get" style="display: flex; gap: 15px; align-items: flex-end; flex-wrap: wrap;">
+        <div>
+            <label>Цена от (руб):</label>
+            <input type="number" name="min_price" value="{{ request.GET.min_price }}" step="10">
+        </div>
+        <div>
+            <label>Цена до (руб):</label>
+            <input type="number" name="max_price" value="{{ request.GET.max_price }}" step="10">
+        </div>
+        <div>
+            <label>Статус:</label>
+            <select name="status">
+                <option value="">Все</option>
+                <option value="free" {% if request.GET.status == 'free' %}selected{% endif %}>Свободно</option>
+                <option value="occupied" {% if request.GET.status == 'occupied' %}selected{% endif %}>Занято</option>
+            </select>
+        </div>
+        <div>
+            <button type="submit" class="btn">Применить</button>
+            <a href="{% url 'spots' %}" class="btn">Сбросить</a>
+        </div>
+    </form>
+</div>
+
+{% for spot in spots %}
+    <div class="card">
+        <p><strong>Место №{{ spot.spot_number }}</strong></p>
+        <p>Цена в месяц: {{ spot.price_per_month }} руб.</p>
+        <p>Статус: 
+            {% if spot.is_occupied %}
+                <span style="color: red;">Занято</span>
+            {% else %}
+                <span style="color: green;">Свободно</span>
+            {% endif %}
+        </p>
+        {% if spot.current_car %}
+            <p>Текущий автомобиль: {{ spot.current_car.brand }} {{ spot.current_car.model }}</p>
+        {% endif %}
+    </div>
+{% empty %}
+    <p>Парковочных мест не найдено.</p>
+{% endfor %}
+{% endblock %}
