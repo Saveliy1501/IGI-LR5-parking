@@ -3,7 +3,6 @@
 {% block content %}
 <h1>Статистика автостоянки</h1>
 
-<!-- Общая статистика -->
 <div class="card">
     <h2>Общие показатели</h2>
     <ul>
@@ -15,7 +14,6 @@
     </ul>
 </div>
 
-<!-- 1. Клиент с самым большим долгом -->
 <div class="card">
     <h2>Клиент с самым большим долгом</h2>
     {% if top_debtor %}
@@ -26,7 +24,6 @@
     {% endif %}
 </div>
 
-<!-- 2. Автомобили с несколькими владельцами -->
 <div class="card">
     <h2>Автомобили с несколькими владельцами ({{ multi_owner_count }})</h2>
     {% if multi_owner_list %}
@@ -40,7 +37,6 @@
     {% endif %}
 </div>
 
-<!-- 3. Анализ за период -->
 <div class="card">
     <h2>Анализ за период</h2>
     <form method="get" style="margin-bottom: 15px;">
@@ -64,7 +60,6 @@
     </p>
 </div>
 
-<!-- 4. Поиск по марке с сортировкой -->
 <div class="card">
     <h2>Поиск автомобилей</h2>
     <form method="get" style="margin-bottom: 10px;">
@@ -94,7 +89,6 @@
     {% endif %}
 </div>
 
-<!-- 5. Диаграмма распределения мест -->
 <div class="card">
     <h2>Распределение парковочных мест</h2>
     {% with free=chart_data.data.0 occupied=chart_data.data.1 total=total_spots %}

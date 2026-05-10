@@ -70,7 +70,6 @@ def add_review(request):
         
         logger.info(f'Пользователь {request.user.username} пытается добавить отзыв. Оценка: {rating}')
         
-        # Валидация
         if not rating or rating not in ['1', '2', '3', '4', '5']:
             logger.warning(f'Неверная оценка от {request.user.username}: {rating}')
             return render(request, 'parking_app/add_review.html', {'error': 'Выберите оценку от 1 до 5'})
@@ -142,9 +141,7 @@ def parking_spot_list(request):
 def statistics(request):
     logger.info(f'Статистика открыта пользователем {request.user.username}')
     
-    # ============================================================
     # 1. Клиент с самым большим долгом и дата последнего платежа
-    # ============================================================
     top_debtor_data = (
         Invoice.objects.filter(is_paid=False)
         .values('client')
@@ -162,9 +159,8 @@ def statistics(request):
             'last_payment_date': last_payment.payment_date if last_payment else 'Нет платежей'
         }
 
-    # ============================================================
+
     # 2. Автомобили с несколькими владельцами
-    # ============================================================
     multi_owner_cars = Car.objects.annotate(owners_count=Count('owners')).filter(owners_count__gt=1)
     multi_owner_count = multi_owner_cars.count()
     multi_owner_list = []
@@ -177,9 +173,7 @@ def statistics(request):
             'owners': list(car.owners.all())
         })
 
-    # ============================================================
     # 3. Период (для отчётов 3 и 4)
-    # ============================================================
     period_days = request.GET.get('period_days', 30)
     try:
         period_days = int(period_days)
@@ -187,9 +181,7 @@ def statistics(request):
         period_days = 30
     start_date = timezone.now().date() - timedelta(days=period_days)
 
-    # ============================================================
     # 4. Автомобиль с наименьшим долгом за период
-    # ============================================================
     car_debts = (
         Car.objects.filter(invoice__date_incurred__gte=start_date, invoice__is_paid=False)
         .annotate(total_debt=Sum('invoice__amount'))
@@ -206,16 +198,14 @@ def statistics(request):
             'debt': min_debt_car.total_debt
         }
 
-    # ============================================================
+    
     # 5. Сумма долга за период (начисления - оплаты)
-    # ============================================================
     total_invoiced = Invoice.objects.filter(date_incurred__gte=start_date).aggregate(Sum('amount'))['amount__sum'] or Decimal(0)
     total_paid = Payment.objects.filter(payment_date__gte=start_date).aggregate(Sum('amount'))['amount__sum'] or Decimal(0)
     net_debt = total_invoiced - total_paid
 
-    # ============================================================
+    
     # 6. Поиск по марке автомобиля (с сортировкой)
-    # ============================================================
     brand_query = request.GET.get('brand', '')
     sort_by = request.GET.get('sort_by', 'brand')
     
@@ -238,9 +228,8 @@ def statistics(request):
             'owners': list(car.owners.all())
         })
 
-    # ============================================================
+    
     # 7. Общая статистика
-    # ============================================================
     total_cars = Car.objects.count()
     total_clients = Client.objects.count()
     total_spots = ParkingSpot.objects.count()
@@ -266,9 +255,8 @@ def statistics(request):
         'total_debt_all': total_debt_all,
     }
 
-    # ============================================================
+    
     # 8. Данные для диаграммы
-    # ============================================================
     free_spots = total_spots - occupied_spots
     chart_data = {
         'labels': ['Свободные', 'Занятые'],
@@ -358,11 +346,7 @@ def employee_dashboard(request):
         'incomes': incomes,
     })
 
-
-# ============================================================
 # КАЛЕНДАРЬ
-# ============================================================
-
 def calendar_view(request):
     """Отображение календаря в текстовом виде"""
     from calendar import monthcalendar, month_name

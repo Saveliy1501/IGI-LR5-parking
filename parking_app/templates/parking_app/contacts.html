@@ -5,6 +5,9 @@
 {% for contact in contacts %}
     <div class="card">
         <h3>{{ contact.full_name }}</h3>
+        {% if contact.photo %}
+            <img src="{{ contact.photo.url }}" alt="{{ contact.full_name }}" style="max-width: 50%;">
+        {% endif %}
         <p>Должность: {{ contact.position }}</p>
         <p>Телефон: {{ contact.phone }}</p>
         <p>Email: {{ contact.email }}</p>

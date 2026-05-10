@@ -6,9 +6,12 @@
     <div class="card">
         <h3>{{ new.title }}</h3>
         <p>{{ new.content }}</p>
+        {% if new.image %}
+            <img src="{{ new.image.url }}" alt="{{ new.title }}" style="max-width: 50%;">
+        {% endif %}
         <p><small>Добавлено: {{ new.created_at|date:"d/m/Y" }}</small></p>
     </div>
 {% empty %}
-    <p>Терминов пока нет.</p>
+    <p>Новостей пока нет.</p>
 {% endfor %}
 {% endblock %}
