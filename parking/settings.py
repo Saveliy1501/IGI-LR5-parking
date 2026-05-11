@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'parking_app', 
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
