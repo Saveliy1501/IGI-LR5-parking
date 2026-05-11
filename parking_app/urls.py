@@ -27,4 +27,6 @@ urlpatterns = [
     path('employee/', views.employee_dashboard, name='employee_dashboard'),
     path('api/', api_views.api_page, name='api_page'),
     path('calendar/', views.calendar_view, name='calendar'),
+    path('reviews/<int:pk>/edit/', views.edit_review, name='edit_review'),
+    path('reviews/<int:pk>/delete/', views.delete_review, name='delete_review'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

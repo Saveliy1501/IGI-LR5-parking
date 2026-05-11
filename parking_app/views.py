@@ -13,6 +13,14 @@ from django.contrib.auth.decorators import user_passes_test
 from django.contrib.admin.views.decorators import staff_member_required
 from calendar import month_name
 import logging
+from django.shortcuts import render, redirect, get_object_or_404
+import matplotlib
+matplotlib.use('Agg')  
+import matplotlib.pyplot as plt
+import io
+import base64
+from django.db.models import Sum
+
 
 logger = logging.getLogger(__name__)
 
@@ -265,6 +273,24 @@ def statistics(request):
     }
     context['chart_data'] = chart_data
 
+    
+    total_spots = ParkingSpot.objects.count()
+    occupied = ParkingSpot.objects.filter(is_occupied=True).count()
+    free = total_spots - occupied
+    
+    fig, ax = plt.subplots()
+    ax.bar(['Свободные', 'Занятые'], [free, occupied], color=['green', 'red'])
+    ax.set_ylabel('Количество мест')
+    ax.set_title('Парковочные места')
+    
+    buffer = io.BytesIO()
+    plt.savefig(buffer, format='png')
+    buffer.seek(0)
+    graph = base64.b64encode(buffer.getvalue()).decode()
+    buffer.close()
+    plt.close()
+    
+    context['graph'] = graph
     return render(request, 'parking_app/statistics.html', context)
 
 
@@ -382,3 +408,27 @@ def calendar_view(request):
         'next_month': next_month,
     }
     return render(request, 'parking_app/calendar.html', context)
+
+@login_required
+def edit_review(request, pk):
+    review = get_object_or_404(Review, pk=pk)
+    
+    if review.user != request.user and not request.user.is_superuser:
+        return redirect('reviews')
+    
+    if request.method == 'POST':
+        review.text = request.POST.get('text')
+        review.rating = request.POST.get('rating')
+        review.save()
+        return redirect('reviews')
+    
+    return render(request, 'parking_app/edit_review.html', {'review': review})
+
+@login_required
+def delete_review(request, pk):
+    review = get_object_or_404(Review, pk=pk)
+    
+    if review.user == request.user or request.user.is_superuser:
+        review.delete()
+    
+    return redirect('reviews')

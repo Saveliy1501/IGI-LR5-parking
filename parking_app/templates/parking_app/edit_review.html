@@ -1,0 +1,28 @@
+{% block content %}
+<h1>Редактировать отзыв</h1>
+<div class="card">
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+    {% endif %}
+    <form method="post">
+        {% csrf_token %}
+        <div>
+            <label>Оценка (1-5):</label>
+            <select name="rating" required>
+                <option value="">Выберите оценку</option>
+                <option value="5">5 - Отлично</option>
+                <option value="4">4 - Хорошо</option>
+                <option value="3">3 - Нормально</option>
+                <option value="2">2 - Плохо</option>
+                <option value="1">1 - Ужасно</option>
+            </select>
+        </div>
+        <div>
+            <label>Текст отзыва:</label>
+            <textarea name="text" rows="5" cols="40" required minlength="3" maxlength="1000"></textarea>
+        </div>
+        <button type="submit" class="btn">Отправить</button>
+        <a href="{% url 'reviews' %}">Отмена</a>
+    </form>
+</div>
+{% endblock %}
