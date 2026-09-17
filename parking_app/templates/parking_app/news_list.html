@@ -2,15 +2,23 @@
 
 {% block content %}
 <h1>Новости компании</h1>
+
 {% for new in news %}
-    <div class="card">
-        <h3>{{ new.title }}</h3>
-        <p>{{ new.content }}</p>
+    <article class="card">
+        <h2>{{ new.title }}</h2>
+        
         {% if new.image %}
-            <img src="{{ new.image.url }}" alt="{{ new.title }}" style="max-width: 50%;">
+            <figure>
+                <img src="{{ new.image.url }}" alt="{{ new.title }}" style="max-width:50%;">
+                <figcaption>Иллюстрация к новости</figcaption>
+            </figure>
         {% endif %}
-        <p><small>Добавлено: {{ new.created_at|date:"d/m/Y" }}</small></p>
-    </div>
+        
+        <p><strong>Кратко:</strong> {{ new.short_content }}</p>
+        <p><small>Добавлено: <time datetime="{{ new.created_at|date:'Y-m-d' }}">{{ new.created_at|date:'d/m/Y' }}</time></small></p>
+        
+        <a href="{% url 'news_detail' new.id %}" class="btn">📖 Читать далее</a>
+    </article>
 {% empty %}
     <p>Новостей пока нет.</p>
 {% endfor %}

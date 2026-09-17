@@ -1,0 +1,59 @@
+{% extends 'parking_app/base.html' %}
+
+{% block content %}
+<h1>🛒 Корзина</h1>
+
+{% if cart_items %}
+    <table border="1" style="width:100%; border-collapse:collapse;">
+        <thead>
+            <tr>
+                <th>№</th>
+                <th>Услуга</th>
+                <th>Цена</th>
+                <th>Количество</th>
+                <th>Сумма</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in cart_items %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ item.service.name }}</td>
+                    <td>{{ item.service.price }} руб.</td>
+                    <td>
+                        <form method="post" action="{% url 'update_cart' item.id %}" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" name="action" value="decrease">−</button>
+                        </form>
+                        {{ item.quantity }}
+                        <form method="post" action="{% url 'update_cart' item.id %}" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" name="action" value="increase">+</button>
+                        </form>
+                    </td>
+                    <td>{{ item.get_total_price }} руб.</td>
+                    <td>
+                        <form method="post" action="{% url 'remove_from_cart' item.id %}" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" onclick="return confirm('Удалить товар?')">🗑️ Удалить</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+            <tr>
+                <td colspan="4" style="text-align:right; font-weight:bold;">Итого:</td>
+                <td colspan="2" style="font-weight:bold;">{{ total }} руб.</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <div style="margin-top:20px;">
+        <a href="{% url 'checkout' %}" class="btn btn-success">💳 Оплатить</a>
+        <a href="{% url 'home' %}" class="btn">Продолжить покупки</a>
+    </div>
+{% else %}
+    <p>Корзина пуста.</p>
+    <a href="{% url 'home' %}" class="btn">Перейти к услугам</a>
+{% endif %}
+{% endblock %}

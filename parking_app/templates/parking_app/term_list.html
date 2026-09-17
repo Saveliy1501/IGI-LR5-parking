@@ -1,13 +1,16 @@
 {% extends 'parking_app/base.html' %}
 
 {% block content %}
-<h1>Словарь терминов</h1>
+<h1>Словарь терминов и понятий</h1>
+
 {% for term in terms %}
-    <div class="card">
-        <h3>{{ term.term }}</h3>
+    <details class="card">
+        <summary>
+            <strong>{{ term.term }}</strong>
+            <small style="color:#666;">(добавлено: {{ term.added_date|date:'d/m/Y' }})</small>
+        </summary>
         <p>{{ term.definition }}</p>
-        <p><small>Добавлено: {{ term.added_date|date:"d/m/Y" }}</small></p>
-    </div>
+    </details>
 {% empty %}
     <p>Терминов пока нет.</p>
 {% endfor %}

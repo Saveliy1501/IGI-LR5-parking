@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .models import (
     Client, Car, ParkingSpot, Invoice, Income,
-    CompanyInfo, News, Term, Contact, Vacancy, Review, PromoCode, Payment
+    CompanyInfo, News, Term, Contact, Vacancy, Review, PromoCode, Payment, Partner, Service, CartItem
 )
 
 @admin.register(Client)
@@ -79,3 +79,19 @@ class PaymentAdmin(admin.ModelAdmin):
     list_filter = ['payment_date']
     search_fields = ['client__full_name']
     raw_id_fields = ['client', 'invoice'] 
+
+@admin.register(Partner)
+class PartnerAdmin(admin.ModelAdmin):
+    list_display = ['name', 'website']
+    search_fields = ['name']
+
+@admin.register(Service)
+class ServiceAdmin(admin.ModelAdmin):
+    list_display = ['name', 'price', 'is_available']
+    list_filter = ['is_available']
+    search_fields = ['name']
+
+@admin.register(CartItem)
+class CartItemAdmin(admin.ModelAdmin):
+    list_display = ['user', 'service', 'quantity', 'get_total_price']
+    list_filter = ['user']

@@ -102,6 +102,7 @@ class CompanyInfo(models.Model):
     video_url = models.URLField('Видео', blank=True)
     logo = models.ImageField('Логотип', upload_to='logos/', blank=True, null=True)
     requisites = models.TextField('Реквизиты', blank=True)
+    certificate = models.TextField('Сертификат', blank=True)  
     
     def __str__(self):
         return 'О компании'
@@ -176,3 +177,41 @@ class PromoCode(models.Model):
     
     def __str__(self):
         return f'{self.code} ({self.discount_percent}%)'
+
+class Partner(models.Model):
+    """Компании-партнёры"""
+    name = models.CharField('Название', max_length=200)
+    logo = models.ImageField('Логотип', upload_to='partners/', blank=True, null=True)
+    website = models.URLField('Сайт', blank=True)
+    description = models.TextField('Описание', blank=True)
+    
+    def __str__(self):
+        return self.name
+
+class Service(models.Model):
+    """Услуга/товар для каталога"""
+    name = models.CharField('Название', max_length=200)
+    description = models.TextField('Описание')
+    price = models.DecimalField('Цена', max_digits=10, decimal_places=2)
+    image = models.ImageField('Изображение', upload_to='services/', blank=True, null=True)
+    is_available = models.BooleanField('Доступно', default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f"{self.name} - {self.price} руб."
+
+class CartItem(models.Model):
+    """Элемент корзины"""
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='cart_items')
+    service = models.ForeignKey(Service, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField('Количество', default=1)
+    added_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        unique_together = ('user', 'service')  # один пользователь — один товар в корзине
+    
+    def get_total_price(self):
+        return self.service.price * self.quantity
+    
+    def __str__(self):
+        return f"{self.user.username} - {self.service.name} x{self.quantity}"

@@ -1,15 +1,106 @@
 {% extends 'parking_app/base.html' %}
+{% load static %}
 
 {% block content %}
-<h1>Автостоянка AutoCar</h1>
-<div class="card">
-    <h2>Последняя новость</h2>
-    {% if latest_news %}
-        <h3>{{ latest_news.title }}</h3>
-        <p>{{ latest_news.short_content }}</p>
-        <a href="{% url 'news_list'%}" class="btn">Читать далее</a>
-    {% else %}
-        <p>Нет новостей.</p>
-    {% endif %}
-</div>
+<section id="main-content">
+    <h1>Автостоянка AutoCar</h1>
+
+    <div id="banner">
+        <figure>
+            <img src="{% static 'banner1.jpg' %}" alt="Баннер автостоянки"
+                style="width:100%; max-height:300px; object-fit:cover;">
+            <figcaption>Надёжное хранение вашего автомобиля 24/7</figcaption>
+        </figure>
+        <div style="display:flex; gap:10px; margin-top:10px; flex-wrap:wrap;">
+            <!-- Баннер 2 -->
+            <picture style="flex:1; min-width:100px;">
+                <source media="(max-width: 600px)" 
+                        srcset="{% static 'adapt.jpg' %}">
+                <source media="(min-width: 601px)" 
+                        srcset="{% static 'banner2.jpg' %}">
+                <img src="{% static 'banner2.jpg' %}" 
+                    alt="Баннер 2"
+                    style="width:100%; height:100px; object-fit:cover;">
+            </picture>
+
+            <!-- Баннер 3 -->
+            <picture style="flex:1; min-width:100px;">
+                <source media="(max-width: 600px)" 
+                        srcset="{% static 'adapt.jpg' %}">
+                <source media="(min-width: 601px)" 
+                        srcset="{% static 'banner3.jpg' %}">
+                <img src="{% static 'banner3.jpg' %}" 
+                    alt="Баннер 3"
+                    style="width:100%; height:100px; object-fit:cover;">
+            </picture>
+
+            <!-- Баннер 4 -->
+            <picture style="flex:1; min-width:100px;">
+                <source media="(max-width: 600px)" 
+                        srcset="{% static 'adapt.jpg' %}">
+                <source media="(min-width: 601px)" 
+                        srcset="{% static 'banner4.jpg' %}">
+                <img src="{% static 'banner4.jpg' %}" 
+                    alt="Баннер 4"
+                    style="width:100%; height:100px; object-fit:cover;">
+            </picture>
+        </div>
+    </div>
+
+    <section id="catalog">
+        <h2>Наши услуги</h2>
+        <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:15px;">
+            {% for service in services %}
+            <article class="card">
+                {% if service.image %}
+                <img src="{{ service.image.url }}" alt="{{ service.name }}"
+                    style="width:100%; height:150px; object-fit:cover;">
+                {% endif %}
+                <h3>{{ service.name }}</h3>
+                <p>{{ service.description|truncatechars:100 }}</p>
+                <p><strong>{{ service.price }} руб.</strong></p>
+                <a href="{% url 'service_detail' service.id %}" class="btn">Подробнее</a>
+            </article>
+            {% empty %}
+            <p>Услуги временно недоступны.</p>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- Последняя новость -->
+    <section id="latest-news">
+        <h2>Последняя новость</h2>
+        <div class="card">
+            {% if latest_news %}
+            <h3>{{ latest_news.title }}</h3>
+            <p>{{ latest_news.short_content }}</p>
+            <time datetime="{{ latest_news.created_at|date:'Y-m-d' }}">
+                {{ latest_news.created_at|date:'d/m/Y' }}
+            </time>
+            <a href="{% url 'news_detail' latest_news.id %}" class="btn">Читать далее</a>
+            {% else %}
+            <p>Нет новостей.</p>
+            {% endif %}
+        </div>
+    </section>
+
+    <section id="partners">
+        <h2>Наши партнёры</h2>
+        <ul style="list-style:none; display:flex; gap:20px; flex-wrap:wrap;">
+            {% for partner in partners %}
+            <li>
+                <a href="{{ partner.website }}" target="_blank" rel="noopener noreferrer">
+                    {% if partner.logo %}
+                    <img src="{{ partner.logo.url }}" alt="{{ partner.name }}" style="height:60px;">
+                    {% else %}
+                    <strong>{{ partner.name }}</strong>
+                    {% endif %}
+                </a>
+            </li>
+            {% empty %}
+            <li>Партнёров пока нет.</li>
+            {% endfor %}
+        </ul>
+    </section>
+</section>
 {% endblock %}

@@ -1,0 +1,35 @@
+{% extends 'parking_app/base.html' %}
+{% load static %}
+
+{% block content %}
+<article class="card">
+    <h1>{{ service.name }}</h1>
+    
+    {% if service.image %}
+        <figure>
+            <img src="{{ service.image.url }}" alt="{{ service.name }}" style="max-width:100%;">
+            <figcaption>{{ service.name }}</figcaption>
+        </figure>
+    {% endif %}
+    
+    <p><strong>Цена:</strong> {{ service.price }} руб.</p>
+    <p><strong>Описание:</strong></p>
+    <p>{{ service.description }}</p>
+    
+    <p><strong>Статус:</strong> 
+        {% if service.is_available %}
+            <span style="color:green;">✅ Доступно</span>
+        {% else %}
+            <span style="color:red;">❌ Недоступно</span>
+        {% endif %}
+    </p>
+    
+    {% if user.is_authenticated and service.is_available %}
+        <a href="{% url 'add_to_cart' service.id %}" class="btn">🛒 Добавить в корзину</a>
+    {% elif not user.is_authenticated %}
+        <p><a href="{% url 'login' %}">Войдите</a> или <a href="{% url 'register' %}">зарегистрируйтесь</a>, чтобы добавить в корзину.</p>
+    {% endif %}
+    
+    <a href="{% url 'home' %}" class="btn">Назад</a>
+</article>
+{% endblock %}

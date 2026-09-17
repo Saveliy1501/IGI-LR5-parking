@@ -1,0 +1,50 @@
+{% extends 'parking_app/base.html' %}
+
+{% block content %}
+<h1>💳 Оплата</h1>
+
+<div class="card">
+    <h2>Ваш заказ</h2>
+    <ul>
+        {% for item in cart_items %}
+            <li>{{ item.service.name }} x{{ item.quantity }} = {{ item.get_total_price }} руб.</li>
+        {% endfor %}
+    </ul>
+    <p><strong>Итого к оплате: {{ total }} руб.</strong></p>
+</div>
+
+<div class="card">
+    <h2>Способ оплаты</h2>
+    <form method="post">
+        {% csrf_token %}
+        
+        <div>
+            <label for="card_number">Номер карты:</label>
+            <input type="text" id="card_number" name="card_number" 
+                   placeholder="0000 0000 0000 0000" 
+                   pattern="\d{4} \d{4} \d{4} \d{4}" 
+                   required title="Введите номер карты в формате 0000 0000 0000 0000">
+        </div>
+        
+        <div>
+            <label for="expiry">Срок действия:</label>
+            <input type="text" id="expiry" name="expiry" 
+                   placeholder="MM/YY" 
+                   pattern="(0[1-9]|1[0-2])/\d{2}" 
+                   required title="Введите срок в формате MM/YY">
+        </div>
+        
+        <div>
+            <label for="cvv">CVV:</label>
+            <input type="password" id="cvv" name="cvv" 
+                   placeholder="***" 
+                   pattern="\d{3}" 
+                   required title="Введите 3 цифры">
+        </div>
+        
+        <button type="submit" class="btn">✅ Оплатить {{ total }} руб.</button>
+    </form>
+</div>
+
+<a href="{% url 'cart' %}" class="btn">← Назад в корзину</a>
+{% endblock %}

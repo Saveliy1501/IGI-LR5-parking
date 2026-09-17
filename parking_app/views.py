@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
-from .models import Car, ParkingSpot, Invoice, News, Term, Contact, Vacancy, Review, PromoCode, CompanyInfo, Client, Payment, Income
+from .models import Car, ParkingSpot, Invoice, News, Term, Contact, Vacancy, Review, PromoCode, CompanyInfo, Client, Payment, Income, Service, Partner, CartItem
 from datetime import datetime
 from .forms import ClientRegistrationForm
 from django.db.models import Sum, Count
@@ -13,22 +13,28 @@ from django.contrib.auth.decorators import user_passes_test
 from django.contrib.admin.views.decorators import staff_member_required
 from calendar import month_name
 import logging
-from django.shortcuts import render, redirect, get_object_or_404
 import matplotlib
 matplotlib.use('Agg')  
 import matplotlib.pyplot as plt
 import io
 import base64
 from django.db.models import Sum
+from django.contrib import messages
 
 
 logger = logging.getLogger(__name__)
 
 
 def home(request):
+    """Главная страница"""
     latest_news = News.objects.first()
-    logger.info(f'Главная страница открыта')
-    return render(request, 'parking_app/home.html', {'latest_news': latest_news})
+    services = Service.objects.filter(is_available=True)[:6]  # первые 6 услуг
+    partners = Partner.objects.all()
+    return render(request, 'parking_app/home.html', {
+        'latest_news': latest_news,
+        'services': services,
+        'partners': partners,
+    })
 
 
 def about(request):
@@ -432,3 +438,82 @@ def delete_review(request, pk):
         review.delete()
     
     return redirect('reviews')
+
+def service_detail(request, pk):
+    """Страница услуги"""
+    service = get_object_or_404(Service, pk=pk)
+    return render(request, 'parking_app/service_detail.html', {'service': service})
+
+@login_required
+def add_to_cart(request, pk):
+    """Добавить в корзину"""
+    service = get_object_or_404(Service, pk=pk)
+    cart_item, created = CartItem.objects.get_or_create(
+        user=request.user,
+        service=service,
+        defaults={'quantity': 1}
+    )
+    if not created:
+        cart_item.quantity += 1
+        cart_item.save()
+    messages.success(request, f'Товар "{service.name}" добавлен в корзину!')
+    return redirect('cart')
+
+@login_required
+def cart_view(request):
+    """Корзина"""
+    cart_items = CartItem.objects.filter(user=request.user)
+    total = sum(item.get_total_price() for item in cart_items)
+    return render(request, 'parking_app/cart.html', {
+        'cart_items': cart_items,
+        'total': total,
+    })
+
+@login_required
+def update_cart(request, pk):
+    """Обновить количество в корзине"""
+    cart_item = get_object_or_404(CartItem, pk=pk, user=request.user)
+    action = request.POST.get('action')
+    if action == 'increase':
+        cart_item.quantity += 1
+    elif action == 'decrease':
+        cart_item.quantity -= 1
+        if cart_item.quantity <= 0:
+            cart_item.delete()
+            messages.info(request, 'Товар удалён из корзины')
+            return redirect('cart')
+    cart_item.save()
+    return redirect('cart')
+
+@login_required
+def remove_from_cart(request, pk):
+    """Удалить из корзины"""
+    cart_item = get_object_or_404(CartItem, pk=pk, user=request.user)
+    cart_item.delete()
+    messages.info(request, 'Товар удалён из корзины')
+    return redirect('cart')
+
+@login_required
+def checkout_view(request):
+    """Страница оплаты"""
+    cart_items = CartItem.objects.filter(user=request.user)
+    if not cart_items:
+        messages.warning(request, 'Корзина пуста')
+        return redirect('cart')
+    
+    total = sum(item.get_total_price() for item in cart_items)
+    
+    if request.method == 'POST':
+        # Здесь будет логика оплаты
+        messages.success(request, 'Оплата прошла успешно!')
+        cart_items.delete()
+        return redirect('home')
+    
+    return render(request, 'parking_app/checkout.html', {
+        'cart_items': cart_items,
+        'total': total,
+    })
+
+def privacy_policy(request):
+    """Политика конфиденциальности"""
+    return render(request, 'parking_app/privacy.html')

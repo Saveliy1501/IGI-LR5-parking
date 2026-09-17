@@ -2,15 +2,190 @@
 
 {% block content %}
 <h1>О компании</h1>
+
 <div class="card">
     {% if info %}
-        <p>{{ info.text }}</p>
-        {% if info.video_url %}
-            <p><a href="{{ info.video_url }}">Видео</a></p>
-        {% endif %}
-        <p>Реквизиты: {{ info.requisites }}</p>
+    <h2>Информация о компании</h2>
+    <p>{{ info.text|linebreaks }}</p>
+
+    {% if info.logo %}
+    <img src="{{ info.logo.url }}" alt="Логотип" style="max-width:200px;">
+    {% endif %}
+
+    {% if info.video_url %}
+    <h3 id="video">Видео о компании</h3>
+    <div>
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/HTm3OHyMjhQ?si=4aTh4AG17nTf-sYM"
+            title="YouTube video player" frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerpolicy="strict-origin-when-cross-origin" allowfullscreen>
+        </iframe>
+    </div>
+    {% endif %}
+
+    <h3 id="audio">Аудио приветствие</h3>
+    <audio controls>
+        <source src="https://www.w3schools.com/html/horse.mp3" type="audio/mpeg">
+    </audio>
+
+    <h3>Содержание</h3>
+    <ul>
+        <li><a href="#history">История компании</a></li>
+        <li><a href="#requisites">Реквизиты</a></li>
+        <li><a href="#certificate">Сертификат</a></li>
+        <li><a href="#video">Видео</a></li>
+        <li><a href="#audio">Аудио</a></li>
+        <li><a href="#poem">Верш</a></li>
+        <li><a href="#download">Скачать</a></li>
+    </ul>
+
+    <h3 id="poem">📝 Верш</h3>
+    <pre>
+Мяжы
+
+Кінь вокам на увесь абшар зямлі:
+Вось хату шчыльна абышлі
+Парканы з гострымі цьвікамі,
+Пасыпаныя бітым шклом,
+Глядзі – ў прасторах за сялом
+Мяжамі
+Падзелены на нівах каласы,
+Ідуць канаўкі празь лясы,
+I стопудовыя гранічныя каменьні
+Сярод лугоў бяскрайных заляглі.
+    </pre>
+
+    <p>
+        Шнуры штыкоў па ўсёй зямлі<br>
+        Гараць, як дзікае хаценьне,<br>
+        На гасударстваў рубяжы.<br>
+        Глядзі: паўсюль мяжы.
+    </p>
+
+    <h3>Сокращения и определения</h3>
+    <p>
+        Наша автостоянка соответствует всем требованиям
+        <abbr title="Государственный стандарт">ГОСТ</abbr>
+        и имеет сертификат
+        <abbr title="Система менеджмента качества">СМК</abbr>.
+    </p>
+    <p>
+        <dfn title="Парковочное место">Парковочное место</dfn> —
+        это специально оборудованная зона для размещения автомобиля.
+    </p>
+
+    <h3 id="listing">💻 Пример листинга</h3>
+    <pre><code>
+function calculateParkingPrice(hours) {
+    const ratePerHour = 5;
+    let total = hours * ratePerHour;
+    if (hours > 24) {
+        total = total * 0.9; // скидка 10%
+    }
+    return total;
+}
+    </code></pre>
+
+    <h3>Цитаты</h3>
+    <blockquote cite="https://www.autocar.by/about">
+        <p>"Мы стремимся обеспечить максимальный комфорт и безопасность
+            для каждого клиента. Наша цель — чтобы вы забыли о заботах,
+            связанных с хранением автомобиля."</p>
+        <footer>— <cite>Директор AutoCar</cite></footer>
+    </blockquote>
+    <p>
+        Как говорится в нашей миссии:
+        <q cite="https://www.autocar.by/mission">Ваш автомобиль — наша забота</q>.
+    </p>
+
+    <h3 id="download">📥 Скачать документы</h3>
+    <p>
+        <a href="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf" download>
+            Скачать информацию о компании (PDF)
+        </a>
+    </p>
+
+    <div itemscope itemtype="https://schema.org/Organization">
+        <h3>Микроданные компании</h3>
+        <p>
+            <strong itemprop="name">AutoCar</strong> — 
+            <span itemprop="description">автостоянка в Минске</span>
+        </p>
+        <p>
+            Адрес: 
+            <span itemprop="address" itemscope itemtype="https://schema.org/PostalAddress">
+                <span itemprop="addressLocality">Минск</span>,
+                <span itemprop="streetAddress">ул. Парковая, д. 1</span>
+            </span>
+        </p>
+        <p>
+            Телефон: <span itemprop="telephone">+375 (29) 111-11-11</span>
+        </p>
+        <p>
+            Email: <span itemprop="email">info@autocar.by</span>
+        </p>
+        <p>
+            Сайт: <a href="https://www.autocar.by" itemprop="url">www.autocar.by</a>
+        </p>
+    </div>
+
+    <h3>Демонстрация глобальных атрибутов</h3>
+    
+    <p id="global-id">1. <strong>id</strong> — уникальный идентификатор элемента</p>
+    
+    <p class="global-class">2. <strong>class</strong> — класс для CSS/JS</p>
+    
+    <p style="color:#1a4a6e;">3. <strong>style</strong> — inline-стили</p>
+    
+    <p title="Это всплывающая подсказка!">4. <strong>title</strong> — наведите курсор</p>
+    
+    <p lang="be">5. <strong>lang</strong> — гэта тэкст на беларускай мове</p>
+    
+    <p dir="rtl">6. <strong>dir</strong> — текст справа налево (עברית)</p>
+    
+    <p hidden>7. <strong>hidden</strong> — этот текст скрыт</p>
+    <p><em>(элемент с hidden не отображается)</em></p>
+    
+    <p tabindex="1">8. <strong>tabindex</strong> — этот элемент доступен по Tab</p>
+    
+    <p accesskey="a">9. <strong>accesskey</strong> — нажмите Alt+A для фокуса</p>
+    
+    <p contenteditable="true">10. <strong>contenteditable</strong> — этот текст можно редактировать (кликните)</p>
+    
+    <p spellcheck="true" contenteditable="true">11. <strong>spellcheck</strong> — проверка орфографии (начните печатать с ошибкой)</p>
+    
+    <p translate="no">12. <strong>translate</strong> — этот текст не переводится (AutoCar)</p>
+    
+    <p data-company="AutoCar" data-year="2020">13. <strong>data-*</strong> — пользовательские данные (data-company, data-year)</p>
+    
+    <p draggable="true">14. <strong>draggable</strong> — этот текст можно перетащить</p>
+
+    <h3 id="history">📜 История компании по годам</h3>
+    <ul>
+        <li><strong>2020</strong> — Основание компании AutoCar</li>
+        <li><strong>2021</strong> — Открытие первой автостоянки на 50 мест</li>
+        <li><strong>2022</strong> — Расширение до 100 мест, установка видеонаблюдения</li>
+        <li><strong>2023</strong> — Внедрение системы автоматического распознавания номеров</li>
+        <li><strong>2024</strong> — Открытие второй стоянки на 150 мест</li>
+        <li><strong>2025</strong> — Получение сертификата качества</li>
+        <li><strong>2026</strong> — Открытие VIP-зоны и зимних боксов</li>
+    </ul>
+
+    <h3 id="requisites">🏦 Реквизиты</h3>
+    <pre style="background:#f5f5f5; padding:15px; border-radius:6px; white-space:pre-wrap; font-family:inherit;">
+{{ info.requisites }}
+    </pre>
+
+    <h3 id="certificate">📄 Сертификат</h3>
+    <pre
+        style="background:#f5f5f5; padding:15px; border-radius:6px; white-space:pre-wrap; font-family:inherit; border:2px solid #1a4a6e;">
+{{ info.certificate|default:"Сертификат ещё не добавлен." }}
+    </pre>
+
     {% else %}
-        <p>Информация о компании временно отсутствует.</p>
+    <p>Информация о компании временно отсутствует.</p>
     {% endif %}
 </div>
-{% endblock %}
+
+<a href="{% url 'home' %}" class="btn">На главную</a>
+{% endblock %}ы
